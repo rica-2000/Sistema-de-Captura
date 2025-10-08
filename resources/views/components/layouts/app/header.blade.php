@@ -3,7 +3,7 @@
     <head>
         @include('partials.head')
     </head>
-    <body class="min-h-screen bg-white dark:bg-zinc-800">
+    <body class="min-h-screen bg-white text-zinc-900 dark:bg-zinc-800 dark:text-zinc-100">
         <flux:header container class="border-b border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
             <flux:sidebar.toggle class="lg:hidden" icon="bars-2" inset="left" />
 
@@ -15,6 +15,24 @@
                 <flux:navbar.item icon="layout-grid" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
                     {{ __('Dashboard') }}
                 </flux:navbar.item>
+                @if(auth()->user()->isCoordinador())
+                    <flux:navbar.item icon="book-open" :href="route('coordinator.subjects')" :current="request()->routeIs('coordinator.subjects')" wire:navigate>
+                        Materias
+                    </flux:navbar.item>
+                    <flux:navbar.item icon="users" :href="route('coordinator.users')" :current="request()->routeIs('coordinator.users')" wire:navigate>
+                        Usuarios
+                    </flux:navbar.item>
+                @endif
+                @if(auth()->user()->isMaestro())
+                    <flux:navbar.item icon="book-open-text" :href="route('teacher.grades')" :current="request()->routeIs('teacher.grades')" wire:navigate>
+                        Capturar calificaciones
+                    </flux:navbar.item>
+                @endif
+                @if(auth()->user()->isAlumno())
+                    <flux:navbar.item icon="book-open-text" :href="route('student.my-grades')" :current="request()->routeIs('student.my-grades')" wire:navigate>
+                        Mis calificaciones
+                    </flux:navbar.item>
+                @endif
             </flux:navbar>
 
             <flux:spacer />
@@ -101,6 +119,30 @@
                     <flux:navlist.item icon="layout-grid" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
                       {{ __('Dashboard') }}
                     </flux:navlist.item>
+                    @if(auth()->user()->isCoordinador())
+                        <flux:navlist.item icon="book-open" :href="route('coordinator.subjects')" :current="request()->routeIs('coordinator.subjects')" wire:navigate>
+                            Materias
+                        </flux:navlist.item>
+                        <flux:navlist.item icon="users" :href="route('coordinator.users')" :current="request()->routeIs('coordinator.users')" wire:navigate>
+                            Usuarios
+                        </flux:navlist.item>
+                        <flux:navlist.item icon="link" :href="route('coordinator.assignments')" :current="request()->routeIs('coordinator.assignments')" wire:navigate>
+                            Asignaciones
+                        </flux:navlist.item>
+                        <flux:navlist.item icon="clipboard" :href="route('coordinator.enrollments')" :current="request()->routeIs('coordinator.enrollments')" wire:navigate>
+                            Inscripciones
+                        </flux:navlist.item>
+                    @endif
+                    @if(auth()->user()->isMaestro())
+                        <flux:navlist.item icon="book-open-text" :href="route('teacher.grades')" :current="request()->routeIs('teacher.grades')" wire:navigate>
+                            Capturar calificaciones
+                        </flux:navlist.item>
+                    @endif
+                    @if(auth()->user()->isAlumno())
+                        <flux:navlist.item icon="book-open-text" :href="route('student.my-grades')" :current="request()->routeIs('student.my-grades')" wire:navigate>
+                            Mis calificaciones
+                        </flux:navlist.item>
+                    @endif
                 </flux:navlist.group>
             </flux:navlist>
 
