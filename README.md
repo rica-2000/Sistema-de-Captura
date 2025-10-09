@@ -53,4 +53,4 @@ Además, se inserta la materia `MAT101`, se asigna al maestro y se inscribe al a
 ## Notas
 
 -   El registro asigna por defecto el rol de Coordinador
--   De ser necesario se puede editar o deshabilita el registro público
+-   De ser necesario se puede editar o deshabilitar el registro público
