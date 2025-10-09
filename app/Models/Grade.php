@@ -11,7 +11,7 @@ class Grade extends Model
     use HasFactory;
 
     protected $fillable = [
-        'enrollment_id', 'teacher_subject_id', 'score', 'status', 'notes',
+        'enrollment_id', 'teacher_subject_id', 'score', 'p1', 'p2', 'p3', 'final', 'status', 'notes',
     ];
 
     public function enrollment(): BelongsTo

@@ -43,7 +43,10 @@ class Grades extends Component
                 foreach ($enrollments as $en) {
                     if (!array_key_exists($en->id, $this->scores)) {
                         $this->scores[$en->id] = [
-                            'score' => optional($en->grade)->score,
+                            'p1' => optional($en->grade)->p1,
+                            'p2' => optional($en->grade)->p2,
+                            'p3' => optional($en->grade)->p3,
+                            'final' => optional($en->grade)->final,
                             'notes' => optional($en->grade)->notes,
                         ];
                     }
@@ -60,7 +63,10 @@ class Grades extends Component
         abort_if($ts->teacher_id !== auth()->id(), 403);
 
         foreach ($this->scores as $enrollmentId => $row) {
-            $score = isset($row['score']) && $row['score'] !== '' ? (float) $row['score'] : null;
+            $p1 = isset($row['p1']) && $row['p1'] !== '' ? (float) $row['p1'] : null;
+            $p2 = isset($row['p2']) && $row['p2'] !== '' ? (float) $row['p2'] : null;
+            $p3 = isset($row['p3']) && $row['p3'] !== '' ? (float) $row['p3'] : null;
+            $final = isset($row['final']) && $row['final'] !== '' ? (float) $row['final'] : null;
             $notes = $row['notes'] ?? null;
 
             $enrollment = Enrollment::find($enrollmentId);
@@ -68,9 +74,11 @@ class Grades extends Component
                 continue;
             }
 
+            // Determinar status: capturada si hay al menos un valor
+            $hasAny = $p1 !== null || $p2 !== null || $p3 !== null || $final !== null;
             GradeModel::updateOrCreate(
                 ['enrollment_id' => $enrollment->id, 'teacher_subject_id' => $ts->id],
-                ['score' => $score, 'status' => is_null($score) ? 'pendiente' : 'capturada', 'notes' => $notes]
+                ['p1' => $p1, 'p2' => $p2, 'p3' => $p3, 'final' => $final, 'status' => $hasAny ? 'capturada' : 'pendiente', 'notes' => $notes]
             );
         }
 

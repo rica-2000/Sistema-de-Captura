@@ -1,5 +1,5 @@
 <div class="space-y-6">
-        <div class="max-w-lg flex items-end gap-3">
+        <div class="max-w-full flex items-end gap-3 flex-wrap">
             <div class="w-80">
                 <label class="block text-sm font-medium mb-1">Materia asignada</label>
                 <select class="w-full border rounded-md px-3 py-2 bg-white text-black dark:bg-neutral-900 dark:text-neutral-100" wire:model.live="teacher_subject_id" wire:change="subjectChanged">
@@ -10,9 +10,15 @@
                 </select>
             </div>
             @if($teacher_subject_id)
-                <button type="button" wire:click="save" class="px-3 py-2 rounded-md bg-blue-600 text-white">Guardar</button>
+                <button type="button" wire:click="save" class="px-3 py-2 rounded-md bg-blue-600 text-white border border-blue-600 hover:bg-blue-700">Guardar</button>
             @endif
         </div>
+
+        @if (session()->has('status'))
+            <div class="rounded-md border border-green-500/30 bg-green-50 text-green-800 dark:bg-green-900/30 dark:text-green-200 px-4 py-2">
+                {{ session('status') }}
+            </div>
+        @endif
 
 
         @if($teacher_subject_id)
@@ -21,7 +27,10 @@
                     <thead class="bg-neutral-50 dark:bg-neutral-800 text-zinc-900 dark:text-zinc-100">
                         <tr>
                             <th class="px-4 py-2 text-left">Alumno</th>
-                            <th class="px-4 py-2 text-left">Calificación</th>
+                            <th class="px-4 py-2 text-left">Parcial 1</th>
+                            <th class="px-4 py-2 text-left">Parcial 2</th>
+                            <th class="px-4 py-2 text-left">Parcial 3</th>
+                            <th class="px-4 py-2 text-left">Final</th>
                             <th class="px-4 py-2 text-left">Notas</th>
                         </tr>
                     </thead>
@@ -29,8 +38,17 @@
                         @forelse($enrollments as $en)
                             <tr class="border-t border-neutral-200 dark:border-neutral-700" wire:key="enrollment-{{ $en->id }}">
                                 <td class="px-4 py-2">{{ $en->student->name }}</td>
-                                <td class="px-4 py-2">
-                                    <input type="number" step="0.01" min="0" max="100" class="w-28 border rounded-md px-2 py-1 bg-white text-black dark:bg-neutral-900 dark:text-neutral-100" wire:model.defer="scores.{{ $en->id }}.score">
+                                <td class="px-2 py-2">
+                                    <input type="number" step="0.01" min="0" max="100" class="w-24 border rounded-md px-2 py-1 bg-white text-black dark:bg-neutral-900 dark:text-neutral-100" wire:model.defer="scores.{{ $en->id }}.p1" placeholder="0-100">
+                                </td>
+                                <td class="px-2 py-2">
+                                    <input type="number" step="0.01" min="0" max="100" class="w-24 border rounded-md px-2 py-1 bg-white text-black dark:bg-neutral-900 dark:text-neutral-100" wire:model.defer="scores.{{ $en->id }}.p2" placeholder="0-100">
+                                </td>
+                                <td class="px-2 py-2">
+                                    <input type="number" step="0.01" min="0" max="100" class="w-24 border rounded-md px-2 py-1 bg-white text-black dark:bg-neutral-900 dark:text-neutral-100" wire:model.defer="scores.{{ $en->id }}.p3" placeholder="0-100">
+                                </td>
+                                <td class="px-2 py-2">
+                                    <input type="number" step="0.01" min="0" max="100" class="w-24 border rounded-md px-2 py-1 bg-white text-black dark:bg-neutral-900 dark:text-neutral-100" wire:model.defer="scores.{{ $en->id }}.final" placeholder="0-100">
                                 </td>
                                 <td class="px-4 py-2">
                                     <input type="text" class="w-full border rounded-md px-2 py-1 bg-white text-black dark:bg-neutral-900 dark:text-neutral-100" wire:model.defer="scores.{{ $en->id }}.notes">
@@ -38,7 +56,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="3" class="px-4 py-6 text-center text-neutral-500">No hay alumnos inscritos para esta materia.</td>
+                                <td colspan="6" class="px-4 py-6 text-center text-neutral-500">No hay alumnos inscritos para esta materia.</td>
                             </tr>
                         @endforelse
                     </tbody>
