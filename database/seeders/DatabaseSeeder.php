@@ -6,8 +6,10 @@ use App\Models\User;
 use App\Models\Subject;
 use App\Models\TeacherSubject;
 use App\Models\Enrollment;
+use App\Models\Grade;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -16,42 +18,67 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Usuarios base
-        $coordinador = User::factory()->create([
-            'name' => 'Carmen Coordinadora',
+        $defaultPassword = Hash::make('password');
+
+        // Usuarios demo (idempotente para redeploys)
+        $coordinador = User::updateOrCreate([
             'email' => 'coord@example.com',
+        ], [
+            'name' => 'Carmen Coordinadora',
+            'password' => $defaultPassword,
             'role' => 'coordinador',
         ]);
 
-        $maestro = User::factory()->create([
-            'name' => 'Mario Maestro',
+        $maestro = User::updateOrCreate([
             'email' => 'maestro@example.com',
+        ], [
+            'name' => 'Mario Maestro',
+            'password' => $defaultPassword,
             'role' => 'maestro',
         ]);
 
-        $alumno = User::factory()->create([
-            'name' => 'Ana Alumna',
+        $alumno = User::updateOrCreate([
             'email' => 'alumno@example.com',
+        ], [
+            'name' => 'Ana Alumna',
+            'password' => $defaultPassword,
             'role' => 'alumno',
         ]);
 
-        // Materia ejemplo
-        $mat = Subject::create([
-            'name' => 'Matemáticas I',
+        // Materia demo
+        $mat = Subject::updateOrCreate([
             'code' => 'MAT101',
+        ], [
+            'name' => 'Matemáticas I',
             'description' => 'Curso básico de matemáticas.',
         ]);
 
         // Asignar maestro a materia
-        $ts = TeacherSubject::create([
+        $ts = TeacherSubject::updateOrCreate([
             'teacher_id' => $maestro->id,
             'subject_id' => $mat->id,
         ]);
 
         // Inscribir alumno a materia
-        Enrollment::create([
+        $enrollment = Enrollment::updateOrCreate([
             'student_id' => $alumno->id,
             'subject_id' => $mat->id,
         ]);
+
+        // Calificaciones demo para visualizar la app al iniciar
+        Grade::updateOrCreate(
+            [
+                'enrollment_id' => $enrollment->id,
+                'teacher_subject_id' => $ts->id,
+            ],
+            [
+                'p1' => 8.5,
+                'p2' => 9.0,
+                'p3' => 8.8,
+                'final' => 9.1,
+                'status' => 'capturada',
+                'notes' => 'Rendimiento constante durante el curso.',
+            ]
+        );
     }
 }
