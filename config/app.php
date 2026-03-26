@@ -26,7 +26,7 @@ return [
     |
     */
 
-    'env' => env('APP_ENV', 'production'),
+    'env' => trim((string) env('APP_ENV', 'production'), "\"'"),
 
     /*
     |--------------------------------------------------------------------------
@@ -52,7 +52,11 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'http://localhost'),
+    'url' => trim((string) env('APP_URL', 'http://localhost'), "\"'"),
+
+    'asset_url' => env('ASSET_URL') !== null
+        ? trim((string) env('ASSET_URL'), "\"'")
+        : null,
 
     /*
     |--------------------------------------------------------------------------
