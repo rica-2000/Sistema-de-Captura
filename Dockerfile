@@ -1,5 +1,10 @@
 # syntax=docker/dockerfile:1.7
 
+FROM composer:2.8 AS vendor
+WORKDIR /app
+COPY composer.json composer.lock ./
+RUN composer install --no-dev --prefer-dist --no-interaction --no-progress --optimize-autoloader --no-scripts
+
 FROM node:20-alpine AS assets
 WORKDIR /app
 COPY package*.json ./
@@ -7,12 +12,8 @@ RUN npm ci
 COPY resources ./resources
 COPY public ./public
 COPY vite.config.js ./
+COPY --from=vendor /app/vendor/livewire/flux/dist ./vendor/livewire/flux/dist
 RUN npm run build
-
-FROM composer:2.8 AS vendor
-WORKDIR /app
-COPY composer.json composer.lock ./
-RUN composer install --no-dev --prefer-dist --no-interaction --no-progress --optimize-autoloader --no-scripts
 
 FROM php:8.3-cli-alpine
 WORKDIR /var/www/html
